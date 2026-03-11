@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar e instalar dependencias Python
-COPY requirements/production.txt requirements/production.txt
+COPY requirements/ requirements/
 RUN pip install --prefix=/install -r requirements/production.txt
 
 # ─────────────────────────────────────────────

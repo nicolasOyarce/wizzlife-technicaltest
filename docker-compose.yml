@@ -34,6 +34,7 @@ services:
       DEBUG: "False"
       ALLOWED_HOSTS: "*"
       DATABASE_URL: postgres://wizzlife:wizzlife_secret@db:5432/wizzlife_db
+      DB_SSL_REQUIRE: "False"
       CORS_ALLOW_ALL_ORIGINS: "True"
       ACCESS_TOKEN_LIFETIME_MINUTES: "60"
       REFRESH_TOKEN_LIFETIME_DAYS: "7"
@@ -44,19 +45,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: >
-      sh -c "
+    command:
+      - sh
+      - -c
+      - |
         python manage.py migrate --no-input &&
         python manage.py collectstatic --no-input &&
-        gunicorn config.wsgi:application
-          --bind 0.0.0.0:8000
-          --workers 2
-          --threads 4
-          --worker-class gthread
-          --timeout 60
-          --access-logfile -
-          --error-logfile -
-      "
+        gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 4 --worker-class gthread --timeout 60 --access-logfile - --error-logfile -
 
 volumes:
   postgres_data:
