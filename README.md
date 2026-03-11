@@ -3,6 +3,8 @@
 API RESTful para gestión de tareas de equipo, desarrollada como prueba técnica fullstack junior de Wizz Life.
 
 > **Stack:** Django 5.1 · Django REST Framework 3.15 · PostgreSQL 16 · JWT · Docker · Render
+>
+> **Producción:** https://wizzlife-technicaltest.onrender.com
 
 ---
 
@@ -14,9 +16,9 @@ API RESTful para gestión de tareas de equipo, desarrollada como prueba técnica
 | [🚀 Instalación local](docs/INSTALACION.md) | Prerequisitos, pasos, variables de entorno, datos de ejemplo |
 | [🐳 Docker](docs/DOCKER.md) | docker-compose, imagen standalone, variables para contenedores |
 | [🧪 Tests](docs/TESTS.md) | Comandos pytest, estructura de tests, cobertura |
-| [☁️ Deploy en Render](docs/DEPLOY.md) | Blueprint automático y configuración manual |
+| [☁️ Deploy en Render](docs/DEPLOY.md) | API desplegada en producción — URL, accesos y stack de prod |
 | [🏗️ Arquitectura](docs/ARQUITECTURA.md) | Modelo ER, estructura de carpetas, decisiones técnicas |
-| [📋 Endpoints (referencia completa)](ENDPOINTS.md) | Body, auth, respuestas y errores de cada endpoint |
+| [📋 Endpoints (referencia completa)](docs/ENDPOINTS.md) | Body, auth, respuestas y errores de cada endpoint |
 
 ---
 
@@ -24,7 +26,7 @@ API RESTful para gestión de tareas de equipo, desarrollada como prueba técnica
 
 ```bash
 # 1. Clonar
-git clone https://github.com/tu-usuario/wizzlife-technicaltest.git
+git clone https://github.com/nicolasOyarce/wizzlife-technicaltest.git
 cd wizzlife-technicaltest
 
 # 2. Levantar DB con Docker
@@ -112,7 +114,7 @@ Base URL: `http://localhost:8000`
 | `POST` | `/tasks/{id}/comments/` | Sí |
 | `DELETE` | `/tasks/{id}/comments/{id}/` | Sí |
 
-→ [Ver referencia completa de endpoints con body, respuestas y errores](ENDPOINTS.md)
+→ [Ver referencia completa de endpoints con body, respuestas y errores](docs/ENDPOINTS.md)
 
 ---
 

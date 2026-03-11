@@ -1,7 +1,7 @@
 # Referencia de Endpoints — Uso Personal
 
 Base URL local: `http://localhost:8000`  
-Base URL producción: `https://{tu-app}.onrender.com`
+Base URL producción: `https://wizzlife-technicaltest.onrender.com`
 
 > **Autenticación:** Los endpoints protegidos requieren el header:  
 > `Authorization: Bearer {access_token}`  
