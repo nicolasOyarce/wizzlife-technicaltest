@@ -480,7 +480,7 @@ Base URL producción: `https://wizzlife-technicaltest.onrender.com`
 
 ---
 
-### `DELETE /tasks/{task_id}/comments/{id}/` — Eliminar comentario
+### `DELETE /tasks/{task_id}/comments/{id}/` — Eliminar comentario (soft delete)
 
 **Autenticación:** ✅ Requerida  
 **Permisos:** Solo el autor del comentario
@@ -488,6 +488,21 @@ Base URL producción: `https://wizzlife-technicaltest.onrender.com`
 **Body:** No aplica
 
 **Respuesta exitosa `204 No Content`:** (sin body)
+
+> El comentario no se elimina físicamente: se marca con `is_deleted=true` y
+> deja de aparecer en listados y en el detalle de la tarea.
+
+**Errores posibles:**
+```json
+// 401 — Sin autenticación
+{ "detail": "Las credenciales de autenticación no se proveyeron." }
+
+// 403 — No eres el autor
+{ "detail": "Solo el autor puede modificar o eliminar este comentario." }
+
+// 404 — Comentario no existe o ya fue eliminado
+{ "detail": "No encontrado." }
+```
 
 ---
 

@@ -85,10 +85,14 @@ class TaskAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ["task", "author", "content_preview", "created_at"]
-    list_filter = ["created_at"]
+    list_display = ["task", "author", "content_preview", "is_deleted", "created_at"]
+    list_filter = ["created_at", "is_deleted"]
     search_fields = ["content", "author__email", "task__title"]
-    readonly_fields = ["id", "created_at", "updated_at"]
+    readonly_fields = ["id", "created_at", "updated_at", "is_deleted", "deleted_at"]
+
+    def get_queryset(self, request):
+        """Mostrar todos los comentarios en admin, incluyendo los eliminados."""
+        return Comment.all_objects.all().select_related("task", "author")
 
     def content_preview(self, obj):
         return obj.content[:80] + "..." if len(obj.content) > 80 else obj.content

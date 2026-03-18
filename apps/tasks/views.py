@@ -177,4 +177,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     @extend_schema(tags=["Comments"], summary="Eliminar comentario")
     def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
+        instance = self.get_object()
+        instance.soft_delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

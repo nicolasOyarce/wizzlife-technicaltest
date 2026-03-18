@@ -31,10 +31,12 @@ Task (tasks_task)
 └── updated_at   DateTimeField (auto)
 
 Comment (tasks_comment)
-├── id        UUID  PK
-├── task      FK → Task  (CASCADE)
-├── author    FK → User  (CASCADE)
-├── content   TextField
+├── id         UUID  PK
+├── task       FK → Task  (CASCADE)
+├── author     FK → User  (CASCADE)
+├── content    TextField
+├── is_deleted BooleanField — soft delete
+├── deleted_at DateTimeField (opcional)
 ├── created_at DateTimeField (auto)
 └── updated_at DateTimeField (auto)
 ```
@@ -64,7 +66,7 @@ wizzlife-technicaltest/
 │   │       ├── test_signup.py  # 12 tests
 │   │       └── test_signin.py  # 10 tests
 │   └── tasks/                  # App de tareas y comentarios
-│       ├── models.py           # Task (soft delete) + Comment
+│       ├── models.py           # Task + Comment (ambos con soft delete)
 │       ├── serializers.py      # List, Detail, Create, Update serializers
 │       ├── views.py            # TaskViewSet + CommentViewSet
 │       ├── filters.py          # Filtros con django-filter

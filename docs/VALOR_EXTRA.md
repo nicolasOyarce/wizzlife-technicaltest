@@ -22,7 +22,7 @@ Esta prueba técnica incluye decisiones y funcionalidades que van **más allá d
 ## 2. Soft Delete (borrado lógico)
 
 **Requerido:** Eliminar una tarea.  
-**Implementado:** Las tareas eliminadas **no se borran físicamente** de la base de datos.
+**Implementado:** Tareas y comentarios eliminados **no se borran físicamente** de la base de datos.
 
 - Se marcan con `is_deleted=True` y `deleted_at=timestamp`.
 - El **manager por defecto** (`SoftDeleteManager`) excluye registros eliminados automáticamente de todas las queries.

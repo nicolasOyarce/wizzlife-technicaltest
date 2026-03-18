@@ -2,8 +2,7 @@
 Modelos de la app de tareas.
 
 - Task:     Tarea principal con soft delete, prioridad y estados.
-- Comment:  Comentario de un usuario sobre una tarea (relación extra para
-            demostrar modelamiento avanzado).
+- Comment:  Comentario de un usuario sobre una tarea con soft delete.
 """
 
 import uuid
@@ -117,12 +116,12 @@ class Task(SoftDeleteModel):
         return new_status in allowed
 
 
-class Comment(TimeStampedModel):
+class Comment(SoftDeleteModel):
     """
     Comentario de un usuario sobre una tarea.
 
-    Agrega una segunda relación al modelo User y demuestra
-    modelamiento avanzado con FK múltiples.
+    Agrega una segunda relación al modelo User y soporte
+    de borrado lógico para mantener trazabilidad.
     """
 
     id = models.UUIDField(
