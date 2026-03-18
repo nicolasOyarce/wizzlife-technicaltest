@@ -182,12 +182,12 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
         """Valida que la transición de estado sea permitida."""
         instance = self.instance
         if instance and instance.status != new_status:
-            if not instance.can_transition_to(new_status):
-                allowed = Task.VALID_STATUS_TRANSITIONS.get(instance.status, [])
+            if not Task.is_transition_allowed(instance.status, new_status):
+                allowed_values = Task.allowed_transitions_from(instance.status)
                 raise serializers.ValidationError(
                     f"No se puede cambiar el estado de '{instance.get_status_display()}' "
                     f"a '{dict(Task.Status.choices).get(new_status, new_status)}'. "
-                    f"Transiciones válidas: {allowed or 'ninguna'}."
+                    f"Transiciones válidas: {allowed_values or 'ninguna'}."
                 )
         return new_status
 

@@ -3,6 +3,7 @@ Tests para GET /tasks/{id}/, PATCH /tasks/{id}/, DELETE /tasks/{id}/
 """
 
 import pytest
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 from apps.tasks.models import Task
 
@@ -63,6 +64,19 @@ class TestUpdateTask:
         task.refresh_from_db()
         assert task.status == Task.Status.IN_PROGRESS
 
+    def test_update_task_status_in_progress_to_review_valid_transition(self, auth_client, task):
+        task.status = Task.Status.IN_PROGRESS
+        task.save(update_fields=["status"])
+
+        response = auth_client.patch(
+            f"{TASKS_URL}{task.id}/",
+            {"status": Task.Status.REVIEW},
+            format="json",
+        )
+        assert response.status_code == 200
+        task.refresh_from_db()
+        assert task.status == Task.Status.REVIEW
+
     def test_update_task_status_invalid_transition_returns_400(self, auth_client, task):
         # PENDING → DONE no está permitido
         response = auth_client.patch(
@@ -92,6 +106,27 @@ class TestUpdateTask:
             format="json",
         )
         assert response.status_code == 200
+
+
+@pytest.mark.django_db
+class TestTaskModelTransitions:
+    """Valida transiciones de estado también para admin/ORM directo."""
+
+    def test_model_save_invalid_transition_raises_validation_error(self, task):
+        task.status = Task.Status.DONE
+
+        with pytest.raises(DjangoValidationError):
+            task.save(update_fields=["status"])
+
+    def test_model_save_valid_transition_allowed(self, task):
+        task.status = Task.Status.IN_PROGRESS
+        task.save(update_fields=["status"])
+
+        task.status = Task.Status.REVIEW
+        task.save(update_fields=["status"])
+
+        task.refresh_from_db()
+        assert task.status == Task.Status.REVIEW
 
 
 @pytest.mark.django_db

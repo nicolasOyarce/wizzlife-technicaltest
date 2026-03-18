@@ -8,6 +8,7 @@ Modelos de la app de tareas.
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from core.models import SoftDeleteModel, TimeStampedModel
@@ -110,10 +111,45 @@ class Task(SoftDeleteModel):
     def __str__(self):
         return f"[{self.get_priority_display()}] {self.title} — {self.get_status_display()}"
 
+    @classmethod
+    def allowed_transitions_from(cls, current_status: str) -> list[str]:
+        return [str(status) for status in cls.VALID_STATUS_TRANSITIONS.get(current_status, [])]
+
+    @classmethod
+    def is_transition_allowed(cls, current_status: str, new_status: str) -> bool:
+        if current_status == new_status:
+            return True
+        return new_status in cls.VALID_STATUS_TRANSITIONS.get(current_status, [])
+
     def can_transition_to(self, new_status: str) -> bool:
         """Verifica si la transición de estado es válida."""
-        allowed = self.VALID_STATUS_TRANSITIONS.get(self.status, [])
-        return new_status in allowed
+        return self.is_transition_allowed(self.status, new_status)
+
+    def save(self, *args, **kwargs):
+        """Aplica reglas de transición de estado también fuera del serializer."""
+        update_fields = kwargs.get("update_fields")
+        should_validate_status = update_fields is None or "status" in update_fields
+
+        if self.pk and should_validate_status:
+            previous_status = (
+                Task.all_objects.filter(pk=self.pk).values_list("status", flat=True).first()
+            )
+            if previous_status and not self.is_transition_allowed(previous_status, self.status):
+                raise ValidationError(
+                    {
+                        "status": [
+                            (
+                                f"No se puede cambiar el estado de "
+                                f"'{dict(Task.Status.choices).get(previous_status, previous_status)}' "
+                                f"a '{self.get_status_display()}'. "
+                                f"Transiciones válidas: "
+                                f"{self.allowed_transitions_from(previous_status) or 'ninguna'}."
+                            )
+                        ]
+                    }
+                )
+
+        return super().save(*args, **kwargs)
 
 
 class Comment(SoftDeleteModel):
